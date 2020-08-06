@@ -69,4 +69,10 @@ class MyUser(AbstractBaseUser):
 
 # class Feedback(models.Model):
 
-# class Meeting(models.Model):
+class Meeting(models.Model):
+    #groupid = models.ForeignKey(Group, on_delete=models.CASCADE)
+    user=models.ManyToManyField(MyUser)
+    meeting_Url=models.CharField(max_length=200,default=False,blank=False)
+    meeting_Time=models.DateTimeField(auto_now=False)
+
+    

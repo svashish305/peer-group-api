@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from api.models import MyUser
+from api.models import MyUser, Meeting
 
 # Register your models here.
 class UserAdmin(BaseUserAdmin):
@@ -26,4 +26,6 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email',)
     filter_horizontal = ()
 
+
 admin.site.register(MyUser, UserAdmin)
+admin.site.register(Meeting)
