@@ -10,4 +10,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 # class Meeting(models.Model):
 
-# class Feedback(models.Model):
+class Feedback(models.Model):
+    
+    grade = models.CharField(max_length=200)
+    remarks = models.CharField(max_length=200)
