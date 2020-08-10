@@ -19,8 +19,8 @@ class MyUserManager(BaseUserManager, PermissionsMixin):
 
         user.set_password(password)
 
-        randomGroup = random.choice(Group.objects.all())
-        user.groupId = Group.objects.get(name=randomGroup.name).id
+        # randomGroup = random.choice(Group.objects.all())
+        # user.groupId = Group.objects.get(name=randomGroup.name).id
 
         user.save(using=self._db)
         return user
@@ -46,7 +46,7 @@ class MyUser(AbstractBaseUser):
     )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    groupId = models.ForeignKey(Group, on_delete=models.CASCADE)
+    # groupId = models.ForeignKey(Group, on_delete=models.CASCADE)
 
     objects = MyUserManager()
 
@@ -76,7 +76,7 @@ class MyUser(AbstractBaseUser):
 # class Feedback(models.Model):
 
 class Meeting(models.Model):
-    groupId = models.ForeignKey(Group, on_delete=models.CASCADE)
+    # groupId = models.ForeignKey(Group, on_delete=models.CASCADE)
     user = models.ManyToManyField(MyUser)
     meetingUrl = models.CharField(max_length=200,default=False,blank=False)
     meetingTime = models.DateTimeField(auto_now=False)
