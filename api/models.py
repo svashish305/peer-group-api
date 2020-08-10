@@ -7,6 +7,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 #     is_student = models.BooleanField('student status', default=False)
 #     is_teacher = models.BooleanField('teacher status', default=False)
 
-# class Feedback(models.Model):
 
 # class Meeting(models.Model):
+
+# class Feedback(models.Model):
