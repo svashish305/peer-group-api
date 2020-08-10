@@ -1,4 +1,6 @@
 venv/
 .idea/
 .env
+api/__pycache__/
+peergroup/__pycache__/
 
