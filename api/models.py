@@ -71,14 +71,12 @@ class MyUser(AbstractBaseUser):
         # Simplest possible answer: All admins are staff
         return self.is_admin
 
-
-
-# class Feedback(models.Model):
+class Feedback(models.Model):
+    grade = models.CharField(max_length=200)
+    remarks = models.CharField(max_length=200)
 
 class Meeting(models.Model):
     groupId = models.ForeignKey(Group, on_delete=models.CASCADE)
     user = models.ManyToManyField(MyUser)
     meetingUrl = models.CharField(max_length=200,default=False,blank=False)
     meetingTime = models.DateTimeField(auto_now=False)
-
-    
