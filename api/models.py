@@ -1,10 +1,15 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import (
-    BaseUserManager, AbstractBaseUser, Group, GroupManager
+    BaseUserManager, AbstractBaseUser,
 )
 import random
 
+
 # Create your models here.
+class MyGroup:
+    groupName = models.CharField(max_length=200)
+
 class MyUserManager(BaseUserManager):
     def create_user(self, email, password=None):
         """
@@ -18,10 +23,8 @@ class MyUserManager(BaseUserManager):
         )
 
         user.set_password(password)
-
-        randomGroup = random.choice(Group.objects.all())
-        user.groupId = Group.objects.get(name=randomGroup.name).id
-
+        randomGroup = random.choice(MyGroup.objects.all())
+        user.groupId = MyGroup.objects.get(name=randomGroup.name).id
         user.save(using=self._db)
         return user
 
@@ -33,7 +36,9 @@ class MyUserManager(BaseUserManager):
             email,
             password=password,
         )
+        user.is_superuser = True
         user.is_admin = True
+        user.is_staff = True
         user.save(using=self._db)
         return user
 
@@ -46,7 +51,8 @@ class MyUser(AbstractBaseUser):
     )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    groupId = models.ForeignKey(Group, on_delete=models.CASCADE)
+    is_superuser = models.BooleanField(default=False)
+    groupId = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
 
     objects = MyUserManager()
 
@@ -71,12 +77,14 @@ class MyUser(AbstractBaseUser):
         # Simplest possible answer: All admins are staff
         return self.is_admin
 
+
 class Feedback(models.Model):
     grade = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
 
+
 class Meeting(models.Model):
-    groupId = models.ForeignKey(Group, on_delete=models.CASCADE)
-    user = models.ManyToManyField(MyUser)
-    meetingUrl = models.CharField(max_length=200,default=False,blank=False)
+    groupId = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
+    user = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    meetingUrl = models.CharField(max_length=200, default=False, blank=False)
     meetingTime = models.DateTimeField(auto_now=False)
