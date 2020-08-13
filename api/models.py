@@ -3,7 +3,6 @@ from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, Group
 )
-import random
 
 
 # Create your models here.
@@ -28,8 +27,7 @@ class MyUserManager(BaseUserManager):
         )
 
         user.set_password(password)
-        # randomGroup = random.choice(GroupExtend.objects.all())
-        # user.groupId = GroupExtend.objects.get(name=randomGroup.name).id
+
         user.save(using=self._db)
         return user
 
@@ -43,9 +41,6 @@ class MyUserManager(BaseUserManager):
         )
         user.is_admin = True
 
-        # group = GroupExtend.objects.create()
-        # user.groupId = group.id
-
         user.save(using=self._db)
         return user
 
@@ -58,7 +53,6 @@ class MyUser(AbstractBaseUser):
     )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    # groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
 
     objects = MyUserManager()
 
@@ -87,12 +81,11 @@ class MyUser(AbstractBaseUser):
 class Feedback(models.Model):
     grade = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
-    # receiverId = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     receiverId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
 
 class Meeting(models.Model):
     groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
-    user = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    user = models.ManyToManyField(MyUser)
     meetingUrl = models.CharField(max_length=200, default=False, blank=False)
     meetingTime = models.DateTimeField(auto_now=False)
