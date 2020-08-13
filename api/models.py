@@ -1,13 +1,14 @@
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import (
-    BaseUserManager, AbstractBaseUser,
+    BaseUserManager, AbstractBaseUser, Group
 )
 import random
 
 
 # Create your models here.
-class MyGroup:
+class GroupExtend(models.Model):
+    group = models.OneToOneField(Group, on_delete=models.CASCADE)
     groupName = models.CharField(max_length=200)
 
 class MyUserManager(BaseUserManager):
@@ -23,8 +24,8 @@ class MyUserManager(BaseUserManager):
         )
 
         user.set_password(password)
-        randomGroup = random.choice(MyGroup.objects.all())
-        user.groupId = MyGroup.objects.get(name=randomGroup.name).id
+        # randomGroup = random.choice(GroupExtend.objects.all())
+        # user.groupId = GroupExtend.objects.get(name=randomGroup.name).id
         user.save(using=self._db)
         return user
 
@@ -36,9 +37,7 @@ class MyUserManager(BaseUserManager):
             email,
             password=password,
         )
-        user.is_superuser = True
         user.is_admin = True
-        user.is_staff = True
         user.save(using=self._db)
         return user
 
@@ -51,8 +50,7 @@ class MyUser(AbstractBaseUser):
     )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
-    groupId = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
+    # groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
 
     objects = MyUserManager()
 
@@ -84,7 +82,7 @@ class Feedback(models.Model):
 
 
 class Meeting(models.Model):
-    groupId = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
+    groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
     user = models.ManyToManyField(settings.AUTH_USER_MODEL)
     meetingUrl = models.CharField(max_length=200, default=False, blank=False)
     meetingTime = models.DateTimeField(auto_now=False)

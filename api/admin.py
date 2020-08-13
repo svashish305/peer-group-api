@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 
-from api.models import MyUser, Meeting, Feedback, MyGroup
+from api.models import MyUser, Meeting, Feedback, GroupExtend
 
 
 # Register your models here.
@@ -29,8 +29,7 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 admin.site.register(MyUser, UserAdmin)
-admin.site.unregister(Group)
-admin.site.register(MyGroup)
+admin.site.register(GroupExtend)
 admin.site.register(Feedback)
 admin.site.register(Meeting)
 
