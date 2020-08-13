@@ -14,6 +14,7 @@ class GroupExtend(models.Model):
     def __str__(self):
         return self.groupName
 
+
 class MyUserManager(BaseUserManager):
     def create_user(self, email, password=None):
         """
@@ -27,8 +28,8 @@ class MyUserManager(BaseUserManager):
         )
 
         user.set_password(password)
-        randomGroup = random.choice(GroupExtend.objects.all())
-        user.groupId = GroupExtend.objects.get(name=randomGroup.name).id
+        # randomGroup = random.choice(GroupExtend.objects.all())
+        # user.groupId = GroupExtend.objects.get(name=randomGroup.name).id
         user.save(using=self._db)
         return user
 
@@ -42,8 +43,8 @@ class MyUserManager(BaseUserManager):
         )
         user.is_admin = True
 
-        group = GroupExtend.objects.create()
-        user.groupId = group.id
+        # group = GroupExtend.objects.create()
+        # user.groupId = group.id
 
         user.save(using=self._db)
         return user
@@ -57,7 +58,7 @@ class MyUser(AbstractBaseUser):
     )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
+    # groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
 
     objects = MyUserManager()
 
@@ -86,7 +87,9 @@ class MyUser(AbstractBaseUser):
 class Feedback(models.Model):
     grade = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
-    receiverId = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    # receiverId = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    receiverId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+
 
 class Meeting(models.Model):
     groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
