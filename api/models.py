@@ -82,7 +82,7 @@ class MyUser(AbstractBaseUser):
 class Feedback(models.Model):
     grade = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
-
+    receiverId = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 class Meeting(models.Model):
     groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
