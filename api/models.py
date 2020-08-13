@@ -11,6 +11,9 @@ class GroupExtend(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
     groupName = models.CharField(max_length=200)
 
+    def __str__(self):
+        return self.groupName
+
 class MyUserManager(BaseUserManager):
     def create_user(self, email, password=None):
         """
