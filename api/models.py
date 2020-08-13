@@ -87,5 +87,5 @@ class Feedback(models.Model):
 class Meeting(models.Model):
     groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
     user = models.ManyToManyField(MyUser)
-    meetingUrl = models.CharField(max_length=200, default=False, blank=False)
-    meetingTime = models.DateTimeField(auto_now=False)
+    url = models.CharField(max_length=200, default=False, blank=False)
+    time = models.DateTimeField(auto_now=False)
