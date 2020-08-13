@@ -27,8 +27,8 @@ class MyUserManager(BaseUserManager):
         )
 
         user.set_password(password)
-        # randomGroup = random.choice(GroupExtend.objects.all())
-        # user.groupId = GroupExtend.objects.get(name=randomGroup.name).id
+        randomGroup = random.choice(GroupExtend.objects.all())
+        user.groupId = GroupExtend.objects.get(name=randomGroup.name).id
         user.save(using=self._db)
         return user
 
@@ -41,6 +41,10 @@ class MyUserManager(BaseUserManager):
             password=password,
         )
         user.is_admin = True
+
+        group = GroupExtend.objects.create()
+        user.groupId = group.id
+
         user.save(using=self._db)
         return user
 
@@ -53,7 +57,7 @@ class MyUser(AbstractBaseUser):
     )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    # groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
+    groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
 
     objects = MyUserManager()
 
