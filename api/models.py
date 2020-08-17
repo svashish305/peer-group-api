@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, Group
 )
-
+import random
 
 # Create your models here.
 class GroupExtend(models.Model):
@@ -42,6 +42,10 @@ class MyUserManager(BaseUserManager):
         user.is_admin = True
 
         user.save(using=self._db)
+
+        # groups = GroupExtend.objects.all()
+        # randomgroup = random.choice(groups)
+
         return user
 
 
@@ -53,7 +57,7 @@ class MyUser(AbstractBaseUser):
     )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-
+    # groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
