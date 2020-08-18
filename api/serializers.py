@@ -18,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = GroupExtend
-        fields = {'id', 'groupName'}
+        fields = {'id', 'group', 'groupName'}
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
