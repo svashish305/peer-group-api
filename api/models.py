@@ -5,6 +5,7 @@ from django.contrib.auth.models import (
 )
 import random
 
+
 # Create your models here.
 class GroupExtend(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
