@@ -24,6 +24,8 @@ class GroupViewSet(viewsets.ModelViewSet):
 class FeedbackViewSet(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
+    permission_classes = (AllowAny,)
+
     # authentication_classes = (TokenAuthentication,)
     # permission_classes = (IsAuthenticated,)
 
@@ -31,5 +33,7 @@ class FeedbackViewSet(viewsets.ModelViewSet):
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
+    permission_classes = (AllowAny,)
+
     # authentication_classes = (TokenAuthentication,)
     # permission_classes = (IsAuthenticated,)

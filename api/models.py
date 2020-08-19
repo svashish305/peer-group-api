@@ -88,9 +88,12 @@ class Feedback(models.Model):
     remarks = models.CharField(max_length=200)
     receiverId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.grade + " " + self.remarks 
+
 
 class Meeting(models.Model):
     groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
     user = models.ManyToManyField(MyUser)
     url = models.CharField(max_length=200, default=False, blank=False)
-    time = models.DateTimeField(auto_now=False)
+    time = models.DateTimeField(auto_now=True)
