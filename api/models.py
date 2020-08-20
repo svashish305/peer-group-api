@@ -1,7 +1,11 @@
+import jwt
+
+from datetime import datetime, timedelta
+
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import (
-    BaseUserManager, AbstractBaseUser, Group
+    BaseUserManager, AbstractBaseUser, Group, PermissionsMixin
 )
 import random
 
@@ -40,6 +44,8 @@ class MyUserManager(BaseUserManager):
             email,
             password=password,
         )
+        user.is_superuser = True
+        user.is_staff = True
         user.is_admin = True
 
         user.save(using=self._db)
@@ -50,13 +56,14 @@ class MyUserManager(BaseUserManager):
         return user
 
 
-class MyUser(AbstractBaseUser):
+class MyUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
         verbose_name='email address',
         max_length=255,
         unique=True,
     )
     is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     # groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
     objects = MyUserManager()
@@ -88,9 +95,15 @@ class Feedback(models.Model):
     remarks = models.CharField(max_length=200)
     receiverId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.grade + ' ' + self.remarks + ' ' + self.receiverId
+
 
 class Meeting(models.Model):
     groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
     user = models.ManyToManyField(MyUser)
     url = models.CharField(max_length=200, default=False, blank=False)
-    time = models.DateTimeField(auto_now=False)
+    time = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.groupId + ' ' + self.user + ' ' + self.url + ' ' + self.time
