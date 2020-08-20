@@ -5,14 +5,12 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import (
-    BaseUserManager, AbstractBaseUser, Group, PermissionsMixin
+    BaseUserManager, AbstractBaseUser, PermissionsMixin
 )
-import random
 
 
 # Create your models here.
-class GroupExtend(models.Model):
-    group = models.OneToOneField(Group, on_delete=models.CASCADE)
+class MyGroup(models.Model):
     groupName = models.CharField(max_length=200)
 
     def __str__(self):
@@ -20,7 +18,7 @@ class GroupExtend(models.Model):
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, password=None):
+    def create_user(self, email, password=None, is_student=False,):
         """
         Creates and saves a User with the given email, role and password.
         """
@@ -29,11 +27,17 @@ class MyUserManager(BaseUserManager):
 
         user = self.model(
             email=self.normalize_email(email),
+            is_student = is_student
         )
 
         user.set_password(password)
 
-        user.save(using=self._db)
+        if user.is_student:
+            user.save(using=self._db)
+        elif not user.is_student:
+            user.is_superuser = True
+            user.is_admin = True
+            user.save(using=self._db)
         return user
 
     def create_superuser(self, email, password=None):
@@ -47,11 +51,9 @@ class MyUserManager(BaseUserManager):
         user.is_superuser = True
         user.is_staff = True
         user.is_admin = True
-
+        user.is_student = False
+        # user.is_teacher = True
         user.save(using=self._db)
-
-        # groups = GroupExtend.objects.all()
-        # randomgroup = random.choice(groups)
 
         return user
 
@@ -65,7 +67,10 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
-    # groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
+
+    is_student = models.BooleanField(default=False)
+    # is_teacher = models.BooleanField(default=False)
+
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
@@ -90,20 +95,28 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         return self.is_admin
 
 
+class UserGroupMapping(models.Model):
+    groupId = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
+    userId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.groupId) + " " + str(self.userId)
+
+
 class Feedback(models.Model):
     grade = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
     receiverId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.grade + ' ' + self.remarks + ' ' + self.receiverId
+        return self.grade + " " + self.remarks + " " + str(self.receiverId)
 
 
 class Meeting(models.Model):
-    groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
+    groupId = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
     user = models.ManyToManyField(MyUser)
     url = models.CharField(max_length=200, default=False, blank=False)
     time = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.groupId + ' ' + self.user + ' ' + self.url + ' ' + self.time
+        return self.groupId + " " + self.user + " " + self.url + " " + self.time

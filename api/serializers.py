@@ -1,19 +1,18 @@
 from rest_framework import serializers
-from .models import MyUser, GroupExtend, Feedback, Meeting
-from rest_framework.authtoken.models import Token
-from django.contrib.auth import authenticate
+from .models import MyUser, MyGroup, Feedback, Meeting, UserGroupMapping
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
-        fields = ('id', 'email', 'password',)
+        fields = ('id', 'email', 'password', 'is_student')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         password = validated_data.pop('password')
         user = MyUser.objects.create_user(**validated_data)
         user.username = validated_data.get('email')
+        user.is_student = validated_data.get('is_student')
         user.set_password(password)
         user.save()
         return user
@@ -48,8 +47,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
-        model = GroupExtend
+        model = MyGroup
         fields = {'id', 'group', 'groupName'}
+
+
+class UserGroupMappingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserGroupMapping
+        fields = {'id', 'groupId', 'userId'}
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
