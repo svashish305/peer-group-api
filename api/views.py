@@ -30,7 +30,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = MyGroup.objects.all()
     serializer_class = GroupSerializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
 
 class UserGroupMappingViewSet(viewsets.ModelViewSet):
@@ -42,7 +42,7 @@ class UserGroupMappingViewSet(viewsets.ModelViewSet):
 class FeedbackViewSet(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
 
 class MeetingViewSet(viewsets.ModelViewSet):
