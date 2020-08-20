@@ -4,8 +4,9 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
+from django.db import transaction
 
-from api.models import MyUser, GroupExtend, Feedback, Meeting
+from api.models import MyUser, GroupExtend, Feedback, Meeting, Student
 
 
 class UserCreationForm(forms.ModelForm):
@@ -54,6 +55,31 @@ class UserChangeForm(forms.ModelForm):
         return self.initial["password"]
 
 
+class TeacherSignUpForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = MyUser
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.is_teacher = True
+        if commit:
+            user.save()
+        return user
+
+
+class StudentSignUpForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = MyUser
+
+    @transaction.atomic
+    def save(self):
+        user = super().save(commit=False)
+        user.is_student = True
+        user.save()
+        student = Student.objects.create(user=user)
+        return user
+
+
 class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
@@ -76,8 +102,9 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email',)
     filter_horizontal = ()
 
+
 admin.site.register(MyUser, UserAdmin)
+admin.site.register(Student)
 admin.site.register(GroupExtend)
 admin.site.register(Feedback)
 admin.site.register(Meeting)
-

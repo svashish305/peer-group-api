@@ -7,7 +7,6 @@ from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, Group, PermissionsMixin
 )
-import random
 
 
 # Create your models here.
@@ -50,9 +49,6 @@ class MyUserManager(BaseUserManager):
 
         user.save(using=self._db)
 
-        # groups = GroupExtend.objects.all()
-        # randomgroup = random.choice(groups)
-
         return user
 
 
@@ -65,7 +61,9 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
-    # groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
+    is_student = models.BooleanField(default=False)
+    is_teacher = models.BooleanField(default=False)
+
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
@@ -90,10 +88,15 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         return self.is_admin
 
 
+class Student(models.Model):
+    user = models.OneToOneField(MyUser, on_delete=models.CASCADE, primary_key=True)
+    groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
+
+
 class Feedback(models.Model):
     grade = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
-    receiverId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    receiverId = models.ForeignKey(Student, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.grade + ' ' + self.remarks + ' ' + self.receiverId
