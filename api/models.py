@@ -18,7 +18,7 @@ class MyGroup(models.Model):
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, is_student=False, password=None,):
+    def create_user(self, email, password=None, is_student=False,):
         """
         Creates and saves a User with the given email, role and password.
         """
@@ -36,7 +36,6 @@ class MyUserManager(BaseUserManager):
             user.save(using=self._db)
         elif not user.is_student:
             user.is_superuser = True
-            user.is_staff = True
             user.is_admin = True
             user.save(using=self._db)
         return user
