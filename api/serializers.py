@@ -5,7 +5,7 @@ from .models import MyUser, MyGroup, Feedback, Meeting, UserGroupMapping
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
-        fields = ('id', 'email', 'password', 'is_student')
+        fields = ('id', 'email', 'password', 'is_student', 'groupId')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -66,4 +66,4 @@ class FeedbackSerializer(serializers.ModelSerializer):
 class MeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting
-        fields = ('id', 'url', 'time', 'groupId')
+        fields = ('id', 'url', 'time', 'user', 'groupId')
