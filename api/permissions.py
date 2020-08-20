@@ -19,29 +19,33 @@ def _has_group_permission(user, required_groups):
 class IsLoggedInUserOrAdmin(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        has_group_permission = _has_group_permission(request.user, self.required_groups)
+        # has_group_permission = _has_group_permission(request.user, self.required_groups)
         if self.required_groups is None:
             return False
-        return obj == request.user or request.user.is_staff or has_group_permission
+        return obj == request.user or request.user.is_staff \
+            # or has_group_permission
 
 
 class IsAdminUser(permissions.BasePermission):
 
     def has_permission(self, request, view):
-        has_group_permission = _has_group_permission(request.user, self.required_groups)
-        return request.user and request.user.is_staff and has_group_permission
+        # has_group_permission = _has_group_permission(request.user, self.required_groups)
+        return request.user and request.user.is_staff \
+            # and has_group_permission
 
     def has_object_permission(self, request, view, obj):
-        has_group_permission = _has_group_permission(request.user, self.required_groups)
-        return request.user and request.user.is_staff and has_group_permission
+        # has_group_permission = _has_group_permission(request.user, self.required_groups)
+        return request.user and request.user.is_staff \
+            # and has_group_permission
 
 
 class IsAdminOrAnonymousUser(permissions.BasePermission):
     required_groups = ['admin', 'anonymous']
 
     def has_permission(self, request, view):
-        has_group_permission = _has_group_permission(request.user, self.required_groups)
-        return request.user and has_group_permission
+        # has_group_permission = _has_group_permission(request.user, self.required_groups)
+        return request.user \
+            # and has_group_permission
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
