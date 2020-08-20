@@ -65,8 +65,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
     # groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
     objects = MyUserManager()
 
@@ -74,17 +72,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-
-    @property
-    def token(self):
-        """
-        Allows us to get a user's token by calling `user.token` instead of
-        `user.generate_jwt_token().
-
-        The `@property` decorator above makes this possible. `token` is called
-        a "dynamic property".
-        """
-        return self._generate_jwt_token()
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
@@ -102,29 +89,21 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         # Simplest possible answer: All admins are staff
         return self.is_admin
 
-    def _generate_jwt_token(self):
-        """
-        Generates a JSON Web Token that stores this user's ID and has an expiry
-        date set to 60 days into the future.
-        """
-        dt = datetime.now() + timedelta(days=60)
-
-        token = jwt.encode({
-            'id': self.pk,
-            'exp': int(dt.strftime('%s'))
-        }, settings.SECRET_KEY, algorithm='HS256')
-
-        return token.decode('utf-8')
-
 
 class Feedback(models.Model):
     grade = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
     receiverId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.grade + ' ' + self.remarks + ' ' + self.receiverId
+
 
 class Meeting(models.Model):
     groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
     user = models.ManyToManyField(MyUser)
     url = models.CharField(max_length=200, default=False, blank=False)
-    time = models.DateTimeField(auto_now=False)
+    time = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.groupId + ' ' + self.user + ' ' + self.url + ' ' + self.time
