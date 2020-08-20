@@ -18,7 +18,7 @@ class MyGroup(models.Model):
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, password=None):
+    def create_user(self, email, is_student=False, password=None,):
         """
         Creates and saves a User with the given email, role and password.
         """
@@ -27,11 +27,18 @@ class MyUserManager(BaseUserManager):
 
         user = self.model(
             email=self.normalize_email(email),
+            is_student = is_student
         )
 
         user.set_password(password)
-        user.is_student = True
-        user.save(using=self._db)
+
+        if user.is_student:
+            user.save(using=self._db)
+        elif not user.is_student:
+            user.is_superuser = True
+            user.is_staff = True
+            user.is_admin = True
+            user.save(using=self._db)
         return user
 
     def create_superuser(self, email, password=None):
@@ -45,6 +52,7 @@ class MyUserManager(BaseUserManager):
         user.is_superuser = True
         user.is_staff = True
         user.is_admin = True
+        user.is_student = False
         # user.is_teacher = True
         user.save(using=self._db)
 
@@ -93,7 +101,7 @@ class UserGroupMapping(models.Model):
     userId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.groupId + " " + self.userId
+        return str(self.groupId) + " " + str(self.userId)
 
 
 class Feedback(models.Model):
@@ -102,7 +110,7 @@ class Feedback(models.Model):
     receiverId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.grade + " " + self.remarks + " " + self.receiverId
+        return self.grade + " " + self.remarks + " " + str(self.receiverId)
 
 
 class Meeting(models.Model):
