@@ -1,8 +1,4 @@
-import jwt
-
-from datetime import datetime, timedelta
-
-from django.conf import settings
+import random
 from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, PermissionsMixin
@@ -18,7 +14,7 @@ class MyGroup(models.Model):
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, password=None, is_student=False,):
+    def create_user(self, email, password=None, is_student=False, groupId=1):
         """
         Creates and saves a User with the given email, role and password.
         """
@@ -27,7 +23,8 @@ class MyUserManager(BaseUserManager):
 
         user = self.model(
             email=self.normalize_email(email),
-            is_student = is_student
+            is_student=is_student,
+            groupId=groupId,
         )
 
         user.set_password(password)
@@ -52,7 +49,6 @@ class MyUserManager(BaseUserManager):
         user.is_staff = True
         user.is_admin = True
         user.is_student = False
-        # user.is_teacher = True
         user.save(using=self._db)
 
         return user
@@ -69,7 +65,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_admin = models.BooleanField(default=False)
 
     is_student = models.BooleanField(default=False)
-    # is_teacher = models.BooleanField(default=False)
+    groupId = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
 
     objects = MyUserManager()
 
