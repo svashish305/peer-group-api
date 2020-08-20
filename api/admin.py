@@ -4,8 +4,9 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
+from django.db import transaction
 
-from api.models import MyUser, GroupExtend, Feedback, Meeting
+from api.models import MyUser, MyGroup, Feedback, Meeting, UserGroupMapping
 
 
 class UserCreationForm(forms.ModelForm):
@@ -76,8 +77,9 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email',)
     filter_horizontal = ()
 
+
 admin.site.register(MyUser, UserAdmin)
-admin.site.register(GroupExtend)
+admin.site.register(MyGroup)
+admin.site.register(UserGroupMapping)
 admin.site.register(Feedback)
 admin.site.register(Meeting)
-
