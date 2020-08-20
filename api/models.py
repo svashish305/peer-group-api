@@ -1,7 +1,11 @@
+import jwt
+
+from datetime import datetime, timedelta
+
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import (
-    BaseUserManager, AbstractBaseUser, Group
+    BaseUserManager, AbstractBaseUser, Group, PermissionsMixin
 )
 import random
 
@@ -40,6 +44,8 @@ class MyUserManager(BaseUserManager):
             email,
             password=password,
         )
+        user.is_superuser = True
+        user.is_staff = True
         user.is_admin = True
 
         user.save(using=self._db)
@@ -50,14 +56,17 @@ class MyUserManager(BaseUserManager):
         return user
 
 
-class MyUser(AbstractBaseUser):
+class MyUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
         verbose_name='email address',
         max_length=255,
         unique=True,
     )
     is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     # groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
     objects = MyUserManager()
 
@@ -65,6 +74,17 @@ class MyUser(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
+    @property
+    def token(self):
+        """
+        Allows us to get a user's token by calling `user.token` instead of
+        `user.generate_jwt_token().
+
+        The `@property` decorator above makes this possible. `token` is called
+        a "dynamic property".
+        """
+        return self._generate_jwt_token()
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
@@ -81,6 +101,20 @@ class MyUser(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+    def _generate_jwt_token(self):
+        """
+        Generates a JSON Web Token that stores this user's ID and has an expiry
+        date set to 60 days into the future.
+        """
+        dt = datetime.now() + timedelta(days=60)
+
+        token = jwt.encode({
+            'id': self.pk,
+            'exp': int(dt.strftime('%s'))
+        }, settings.SECRET_KEY, algorithm='HS256')
+
+        return token.decode('utf-8')
 
 
 class Feedback(models.Model):
