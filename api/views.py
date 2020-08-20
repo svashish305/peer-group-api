@@ -22,7 +22,8 @@ class UserViewSet(viewsets.ModelViewSet):
             permission_classes = [AllowAny]
             # permission_classes = [IsLoggedInUserOrAdmin]
         elif self.action == 'list' or self.action == 'destroy':
-            permission_classes = [IsAdminUser]
+            # permission_classes = [IsAdminUser]
+            permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
 
 
