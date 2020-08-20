@@ -115,4 +115,4 @@ class Meeting(models.Model):
     time = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.groupId + " " + self.user + " " + self.url + " " + self.time
+        return str(self.groupId) + " " + str(self.user) + " " + self.url + " " + str(self.time)
