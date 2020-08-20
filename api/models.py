@@ -69,7 +69,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
     def __str__(self):
-        return self.email + ' ' + self.is_teacher
+        return self.email
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
@@ -93,7 +93,7 @@ class Student(models.Model):
     groupId = models.ForeignKey(GroupExtend, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.email + ' ' + self.is_student
+        return self.email
 
 
 class Feedback(models.Model):
