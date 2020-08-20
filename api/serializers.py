@@ -1,7 +1,5 @@
 from rest_framework import serializers
-from .models import MyUser, GroupExtend, Feedback, Meeting
-from rest_framework.authtoken.models import Token
-from django.contrib.auth import authenticate
+from .models import MyUser, MyGroup, Feedback, Meeting, UserGroupMapping
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -48,8 +46,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
-        model = GroupExtend
+        model = MyGroup
         fields = {'id', 'group', 'groupName'}
+
+
+class UserGroupMappingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserGroupMapping
+        fields = {'id', 'groupId', 'userId'}
 
 
 class FeedbackSerializer(serializers.ModelSerializer):

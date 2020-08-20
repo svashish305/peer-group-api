@@ -20,7 +20,6 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView, TokenVerifyView,
 )
-from api.views import StudentSignUpView, TeacherSignUpView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,7 +28,4 @@ urlpatterns = [
     path('api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
-    # path('api/signup/', SignUpView.as_view(), name='signup'),
-    path('api/signup/student/', StudentSignUpView.as_view(), name='student_signup'),
-    path('api/signup/teacher/', TeacherSignUpView.as_view(), name='teacher_signup'),
 ]
