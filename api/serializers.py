@@ -48,13 +48,13 @@ class UserSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyGroup
-        fields = {'id', 'group', 'groupName'}
+        fields = ('id', 'groupName')
 
 
 class UserGroupMappingSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserGroupMapping
-        fields = {'id', 'groupId', 'userId'}
+        fields = ('id', 'groupId', 'userId')
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
