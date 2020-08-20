@@ -44,25 +44,12 @@ class UserGroupMappingViewSet(viewsets.ModelViewSet):
 class FeedbackViewSet(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
-<<<<<<< HEAD
-    permission_classes = (AllowAny,)
-
-    # authentication_classes = (TokenAuthentication,)
-    # permission_classes = (IsAuthenticated,)
-=======
     permission_classes = (IsAuthenticated,)
->>>>>>> master
 
 
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
-<<<<<<< HEAD
-    permission_classes = (AllowAny,)
-
-    # authentication_classes = (TokenAuthentication,)
-    # permission_classes = (IsAuthenticated,)
-=======
     permission_classes = (IsAuthenticated,)
 
 
@@ -90,4 +77,3 @@ def meetings_of_group(request, group_id):
     group = MyGroup.objects.get(id=group_id)
     meetings = Meeting.objects.filter(groupId=group)
     return render(request, 'meetings_of_group.html', {'meetings': meetings})
->>>>>>> master

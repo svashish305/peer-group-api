@@ -105,11 +105,7 @@ class Feedback(models.Model):
     receiverId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
     def __str__(self):
-<<<<<<< HEAD
-        return self.grade + " " + self.remarks 
-=======
         return self.grade + " " + self.remarks + " " + str(self.receiverId)
->>>>>>> master
 
 
 class Meeting(models.Model):
@@ -117,9 +113,6 @@ class Meeting(models.Model):
     user = models.ManyToManyField(MyUser)
     url = models.CharField(max_length=200, default=False, blank=False)
     time = models.DateTimeField(auto_now=True)
-<<<<<<< HEAD
-=======
 
     def __str__(self):
         return str(self.groupId) + " " + str(self.user) + " " + self.url + " " + str(self.time)
->>>>>>> master
