@@ -1,4 +1,5 @@
 from django.contrib.auth import login
+from django.core import serializers
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.views.generic import CreateView
@@ -6,6 +7,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
 
 from .decorators import teacher_required
 from .models import MyUser, MyGroup, Feedback, Meeting \
@@ -37,7 +39,6 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = MyGroup.objects.all()
     serializer_class = GroupSerializer
     permission_classes = (IsAuthenticated, IsTeacherAndLoggedIn)
-    # permission_classes = (AdminAndAuthenticated,)
 
 
 # class UserGroupMappingViewSet(viewsets.ModelViewSet):
@@ -61,7 +62,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 def get_loggedin_user_details(request):
     user = MyUser.objects.get(id=request.user.id)
     return render(request, 'loggedin_user_details.html', {'user': user})
-    # return JsonResponse(user, safe = False)
+
 
 @api_view(['GET'])
 def group_details_of_user(request, user_id):
