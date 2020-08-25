@@ -91,12 +91,12 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         return self.is_admin
 
 
-class UserGroupMapping(models.Model):
-    groupId = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
-    userId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.groupId) + " " + str(self.userId)
+# class UserGroupMapping(models.Model):
+#     groupId = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
+#     userId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+#
+#     def __str__(self):
+#         return str(self.groupId) + " " + str(self.userId)
 
 
 class Feedback(models.Model):

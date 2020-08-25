@@ -1,12 +1,13 @@
 from django.urls import path
 from rest_framework import routers
 from django.conf.urls import include, url
-from .views import UserViewSet, GroupViewSet, FeedbackViewSet, MeetingViewSet, UserGroupMappingViewSet, group_details_of_user, feedbacks_of_user, users_of_group, meetings_of_group
+from .views import UserViewSet, GroupViewSet, FeedbackViewSet, MeetingViewSet, group_details_of_user, feedbacks_of_user, users_of_group, meetings_of_group\
+    # , UserGroupMappingViewSet
 
 router = routers.DefaultRouter()
 router.register('users', UserViewSet)
 router.register('groups', GroupViewSet)
-router.register('usergroupmapping', UserGroupMappingViewSet)
+# router.register('usergroupmapping', UserGroupMappingViewSet)
 router.register('feedback', FeedbackViewSet)
 router.register('meetings', MeetingViewSet)
 

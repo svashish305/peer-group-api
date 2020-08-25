@@ -6,7 +6,8 @@ from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from .models import MyUser, MyGroup, Feedback, Meeting, UserGroupMapping
+from .models import MyUser, MyGroup, Feedback, Meeting\
+    # , UserGroupMapping
 from .permissions import IsLoggedInUserOrAdmin, IsAdminUser
 from .serializers import UserSerializer, GroupSerializer, FeedbackSerializer, MeetingSerializer
 
@@ -35,10 +36,10 @@ class GroupViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
 
-class UserGroupMappingViewSet(viewsets.ModelViewSet):
-    queryset = UserGroupMapping.objects.all()
-    serializer_class = GroupSerializer
-    permission_classes = (AllowAny,)
+# class UserGroupMappingViewSet(viewsets.ModelViewSet):
+#     queryset = UserGroupMapping.objects.all()
+#     serializer_class = GroupSerializer
+#     permission_classes = (AllowAny,)
 
 
 class FeedbackViewSet(viewsets.ModelViewSet):
@@ -56,8 +57,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
 @api_view(['GET'])
 def group_details_of_user(request, user_id):
     user = MyUser.objects.get(id=user_id)
-    groupId = user.groupId.id
-    group = MyGroup.objects.get(id=groupId)
+    group_id = user.groupId.id
+    group = MyGroup.objects.get(id=group_id)
     return render(request, 'group_details.html', {'group': group})
 
 @api_view(['GET'])
