@@ -64,13 +64,13 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         return obj.owner == request.user
 
 
-class AdminAndAuthenticated(permissions.BasePermission):
+class IsTeacherAndLoggedIn(permissions.BasePermission):
     def has_permission(self, request, view):
         # has_group_permission = _has_group_permission(request.user, self.required_groups)
-        return request.user and request.user.is_staff and (not request.user.is_student) \
+        return request.user and (not request.user.is_student) \
             # and has_group_permission
 
     def has_object_permission(self, request, view, obj):
         # has_group_permission = _has_group_permission(request.user, self.required_groups)
-        return obj == request.user and request.user.is_staff and (not request.user.is_student) \
+        return obj == request.user and request.user and (not request.user.is_student) \
             # and has_group_permission

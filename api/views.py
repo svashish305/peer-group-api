@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .decorators import teacher_required
 from .models import MyUser, MyGroup, Feedback, Meeting \
     # , UserGroupMapping
-from .permissions import IsLoggedInUserOrAdmin, IsAdminUser, AdminAndAuthenticated
+from .permissions import IsAdminUser, IsTeacherAndLoggedIn
 from .serializers import UserSerializer, GroupSerializer, FeedbackSerializer, MeetingSerializer
 
 
@@ -36,7 +36,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = MyGroup.objects.all()
     serializer_class = GroupSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsTeacherAndLoggedIn)
     # permission_classes = (AdminAndAuthenticated,)
 
 
@@ -48,22 +48,20 @@ class GroupViewSet(viewsets.ModelViewSet):
 class FeedbackViewSet(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
-    permission_classes = (IsAuthenticated,)
-    # permission_classes = (AdminAndAuthenticated,)
+    permission_classes = (IsAuthenticated, IsTeacherAndLoggedIn)
 
 
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
-    permission_classes = (IsAuthenticated,)
-    # permission_classes = (AdminAndAuthenticated,)
+    permission_classes = (IsAuthenticated, IsTeacherAndLoggedIn)
 
 
 @api_view(['GET'])
 def get_loggedin_user_details(request):
     user = MyUser.objects.get(id=request.user.id)
     return render(request, 'loggedin_user_details.html', {'user': user})
-
+    # return JsonResponse(user, safe = False)
 
 @api_view(['GET'])
 def group_details_of_user(request, user_id):
