@@ -1,15 +1,8 @@
-from django.contrib.auth import login
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render
-from django.views.generic import CreateView
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
-from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, AllowAny
-
-from .decorators import teacher_required
-from .models import MyUser, MyGroup, Feedback, Meeting \
-    # , UserGroupMapping
+from .models import MyUser, MyGroup, Feedback, Meeting
 from .permissions import IsAdminUser, IsTeacherAndLoggedIn
 from .serializers import UserSerializer, GroupSerializer, FeedbackSerializer, MeetingSerializer
 
@@ -37,13 +30,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = MyGroup.objects.all()
     serializer_class = GroupSerializer
     permission_classes = (IsAuthenticated, IsTeacherAndLoggedIn)
-    # permission_classes = (AdminAndAuthenticated,)
 
-
-# class UserGroupMappingViewSet(viewsets.ModelViewSet):
-#     queryset = UserGroupMapping.objects.all()
-#     serializer_class = GroupSerializer
-#     permission_classes = (AllowAny,)
 
 class FeedbackViewSet(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
@@ -59,49 +46,58 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def get_loggedin_user_details(request):
-    user = MyUser.objects.get(id=request.user.id)
-    return render(request, 'loggedin_user_details.html', {'user': user})
-    # return JsonResponse(user, safe = False)
+    user = {
+        'id': request.user.id,
+        'email': request.user.email,
+        'is_student': request.user.is_student,
+        'groupId': request.user.groupId.id
+    }
+    return JsonResponse(user, safe=False)
+
 
 @api_view(['GET'])
 def group_details_of_user(request, user_id):
     user = MyUser.objects.get(id=user_id)
     group_id = user.groupId.id
     group = MyGroup.objects.get(id=group_id)
-    return render(request, 'group_details.html', {'group': group})
+    group_details = {
+        'id': group.id,
+        'groupName': group.groupName
+    }
+    return JsonResponse(group_details, safe=False)
 
 
 @api_view(['GET'])
 def feedbacks_of_user(request, user_id):
     if request.user.id == user_id:
         user = MyUser.objects.get(id=user_id)
-        feedbacks = Feedback.objects.filter(receiverId=user)
-        return render(request, 'feedbacks.html', {'feedbacks': feedbacks})
+        feedbacks = list(Feedback.objects.filter(receiverId=user).values())
+        return JsonResponse(feedbacks, safe=False)
     else:
         if request.user.is_student:
             return HttpResponse("You can't access this info")
         else:
             user = MyUser.objects.get(id=user_id)
-            feedbacks = Feedback.objects.filter(receiverId=user)
-            return render(request, 'feedbacks.html', {'feedbacks': feedbacks})
+            feedbacks = list(Feedback.objects.filter(receiverId=user).values())
+            return JsonResponse(feedbacks, safe=False)
 
 
 @api_view(['GET'])
 def users_of_group(request, group_id):
     group = MyGroup.objects.get(id=group_id)
-    users = MyUser.objects.filter(groupId=group)
-    return render(request, 'users_of_group.html', {'users': users})
+    users = list(MyUser.objects.filter(groupId=group).values("id", "email", "is_student"))
+    return JsonResponse(users, safe=False)
 
 
 @api_view(['GET'])
 def meetings_of_group(request, group_id):
     group = MyGroup.objects.get(id=group_id)
-    meetings = Meeting.objects.filter(groupId=group)
-    return render(request, 'meetings_of_group.html', {'meetings': meetings})
+    meetings = list(Meeting.objects.filter(groupId=group).values())
+    return JsonResponse(meetings, safe=False)
 
 
 @api_view(['GET'])
 def meetings_of_user(request, user_id):
     user = MyUser.objects.get(id=user_id)
-    meetings = Meeting.objects.filter(groupId=user.groupId.id)
-    return render(request, 'meetings_of_group.html', {'meetings': meetings})
+    meetings = list(Meeting.objects.filter(groupId=user.groupId.id).values())
+    return JsonResponse(meetings, safe=False)

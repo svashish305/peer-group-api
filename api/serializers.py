@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import MyUser, MyGroup, Feedback, Meeting\
-    # , UserGroupMapping
+from .models import MyUser, MyGroup, Feedback, Meeting
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -50,12 +49,6 @@ class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyGroup
         fields = ('id', 'groupName')
-
-
-# class UserGroupMappingSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = UserGroupMapping
-#         fields = ('id', 'groupId', 'userId')
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
