@@ -4,7 +4,7 @@ from .models import MyGroup
 
 def _is_in_group(user, group_id):
     """
-    Takes a user and a group name, and returns `True` if the user is in that group.
+    Takes a user and a group id, and returns `True` if the user is in that group.
     """
     try:
         return MyGroup.objects.get(id=group_id).user_set.filter(id=user.id).exists()
@@ -62,3 +62,15 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
         # Write permissions are only allowed to the owner of the snippet.
         return obj.owner == request.user
+
+
+class IsTeacherAndLoggedIn(permissions.BasePermission):
+    def has_permission(self, request, view):
+        # has_group_permission = _has_group_permission(request.user, self.required_groups)
+        return request.user and (not request.user.is_student) \
+            # and has_group_permission
+
+    def has_object_permission(self, request, view, obj):
+        # has_group_permission = _has_group_permission(request.user, self.required_groups)
+        return obj == request.user and request.user and (not request.user.is_student) \
+            # and has_group_permission
