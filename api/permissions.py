@@ -70,7 +70,7 @@ class IsTeacherAndLoggedIn(permissions.BasePermission):
         return request.user and (not request.user.is_student) \
             # and has_group_permission
 
-    def has_object_permission(self, request, view, obj):
-        # has_group_permission = _has_group_permission(request.user, self.required_groups)
-        return obj == request.user and request.user and (not request.user.is_student) \
-            # and has_group_permission
+    # def has_object_permission(self, request, view, obj):
+    #     # has_group_permission = _has_group_permission(request.user, self.required_groups)
+    #     return obj == request.user and request.user and (not request.user.is_student) \
+    #         # and has_group_permission
