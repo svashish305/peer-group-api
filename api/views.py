@@ -105,9 +105,14 @@ def meetings_of_user(request, user_id):
 
 @api_view(['POST'])
 def set_meeting(request):
+    # meeting_duration 1hr and meeting_window < 2*meeting_duration
     if not request.user.is_student:
         body=json.loads(request.body)
         n = len(body['start'])
+
+        for i in range(0, n):
+            body['end'][i] -= 100
+
         maxa = max(body['start'])
         maxb = max(body['end'])
         maxc = max(maxa, maxb)
@@ -128,12 +133,12 @@ def set_meeting(request):
                 idx = i
 
         meeting_start_time = idx
-        meeting_end_time = idx+1 if idx<24 else 0
+        meeting_end_time = idx+100 if idx<2400 else 0000
         users_in_group = list(MyUser.objects.filter(groupId=int(body['group_id'])).values("id"))
         meeting = {
             'groupId': int(body['group_id']),
             'user': users_in_group,
             'url': 'some-zoom-link',
-            'time': str(meeting_start_time) + '-' + str(meeting_end_time)
+            'time': str(meeting_start_time) + ':' + str(meeting_end_time)
         }
         return JsonResponse(meeting, safe=False)
