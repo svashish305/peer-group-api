@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import MyUser, MyGroup, Feedback, Meeting
 from .permissions import IsAdminUser, IsTeacherAndLoggedIn
 from .serializers import UserSerializer, GroupSerializer, FeedbackSerializer, MeetingSerializer
-
+import json
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
@@ -60,11 +60,11 @@ def group_details_of_user(request, user_id):
     user = MyUser.objects.get(id=user_id)
     group_id = user.groupId.id
     group = MyGroup.objects.get(id=group_id)
-    group_details = {
+    group_body = {
         'id': group.id,
         'groupName': group.groupName
     }
-    return JsonResponse(group_details, safe=False)
+    return JsonResponse(group_body, safe=False)
 
 
 @api_view(['GET'])
@@ -101,3 +101,44 @@ def meetings_of_user(request, user_id):
     user = MyUser.objects.get(id=user_id)
     meetings = list(Meeting.objects.filter(groupId=user.groupId.id).values())
     return JsonResponse(meetings, safe=False)
+
+
+@api_view(['POST'])
+def set_meeting(request):
+    # meeting_duration 1hr and meeting_window < 2*meeting_duration
+    if not request.user.is_student:
+        body=json.loads(request.body)
+        n = len(body['start'])
+
+        for i in range(0, n):
+            body['end'][i] -= 100
+
+        maxa = max(body['start'])
+        maxb = max(body['end'])
+        maxc = max(maxa, maxb)
+        x = (maxc + 2) * [0]
+        cur = 0
+        idx = 0
+
+        for i in range(0, n):
+            x[body['start'][i]] += 1
+            x[body['end'][i] + 1] -= 1
+
+        maxy = -1
+
+        for i in range(0, maxc + 1):
+            cur += x[i]
+            if maxy < cur:
+                maxy = cur
+                idx = i
+
+        meeting_start_time = idx
+        meeting_end_time = idx+100 if idx<2400 else 0000
+        users_in_group = list(MyUser.objects.filter(groupId=int(body['group_id'])).values("id"))
+        meeting = {
+            'groupId': int(body['group_id']),
+            'user': users_in_group,
+            'url': 'some-zoom-link',
+            'time': str(meeting_start_time) + ':' + str(meeting_end_time)
+        }
+        return JsonResponse(meeting, safe=False)
