@@ -105,7 +105,7 @@ def meetings_of_user(request, user_id):
 
 @api_view(['POST'])
 def set_meeting(request):
-    # meeting_duration 1hr and meeting_window < 2*meeting_duration
+    # meeting_duration 1hr and meeting_window <= 3*meeting_duration
     if not request.user.is_student:
         body=json.loads(request.body)
         n = len(body['start'])
