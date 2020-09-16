@@ -7,6 +7,7 @@ from .permissions import IsAdminUser, IsTeacherAndLoggedIn
 from .serializers import UserSerializer, GroupSerializer, FeedbackSerializer, MeetingSerializer
 import json
 
+
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
     queryset = MyUser.objects.all()
@@ -50,7 +51,8 @@ def get_loggedin_user_details(request):
         'id': request.user.id,
         'email': request.user.email,
         'is_student': request.user.is_student,
-        'groupId': request.user.groupId.id
+        'groupId': request.user.groupId.id,
+        'availability': request.user.availability,
     }
     return JsonResponse(user, safe=False)
 
@@ -85,7 +87,7 @@ def feedbacks_of_user(request, user_id):
 @api_view(['GET'])
 def users_of_group(request, group_id):
     group = MyGroup.objects.get(id=group_id)
-    users = list(MyUser.objects.filter(groupId=group).values("id", "email", "is_student"))
+    users = list(MyUser.objects.filter(groupId=group).values("id", "email", "is_student", "availability"))
     return JsonResponse(users, safe=False)
 
 
@@ -96,6 +98,21 @@ def meetings_of_group(request, group_id):
     return JsonResponse(meetings, safe=False)
 
 
+@api_view(['POST'])
+def set_user_availability(request, user_id):
+    body = json.loads(request.body)
+    user = MyUser.objects.get(id=user_id)
+    user.availability = str(body['start']) + '-' + str(body['end'])
+    updated_user = {
+        'id': user.id,
+        'email': user.email,
+        'is_student': user.is_student,
+        'groupId': user.groupId.id,
+        'availability': user.availability
+    }
+    return JsonResponse(updated_user, safe=False)
+
+
 @api_view(['GET'])
 def meetings_of_user(request, user_id):
     user = MyUser.objects.get(id=user_id)
@@ -104,10 +121,10 @@ def meetings_of_user(request, user_id):
 
 
 @api_view(['POST'])
-def set_meeting(request):
+def set_meeting(request, group_id):
     # meeting_duration 1hr and meeting_window <= 3*meeting_duration
     if not request.user.is_student:
-        body=json.loads(request.body)
+        body = json.loads(request.body)
         n = len(body['start'])
 
         for i in range(0, n):
@@ -133,10 +150,10 @@ def set_meeting(request):
                 idx = i
 
         meeting_start_time = idx
-        meeting_end_time = idx+100 if idx<2400 else 0000
-        users_in_group = list(MyUser.objects.filter(groupId=int(body['group_id'])).values("id"))
+        meeting_end_time = idx + 100 if idx < 2400 else 0000
+        users_in_group = list(MyUser.objects.filter(groupId=int(group_id)).values("id"))
         meeting = {
-            'groupId': int(body['group_id']),
+            'groupId': int(group_id),
             'user': users_in_group,
             'url': 'some-zoom-link',
             'time': str(meeting_start_time) + ':' + str(meeting_end_time)
