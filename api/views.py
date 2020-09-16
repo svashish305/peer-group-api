@@ -100,17 +100,18 @@ def meetings_of_group(request, group_id):
 
 @api_view(['POST'])
 def set_user_availability(request, user_id):
-    body = json.loads(request.body)
-    user = MyUser.objects.get(id=user_id)
-    user.availability = str(body['start']) + '-' + str(body['end'])
-    updated_user = {
-        'id': user.id,
-        'email': user.email,
-        'is_student': user.is_student,
-        'groupId': user.groupId.id,
-        'availability': user.availability
-    }
-    return JsonResponse(updated_user, safe=False)
+    if request.user.is_student:
+        body = json.loads(request.body)
+        user = MyUser.objects.get(id=user_id)
+        user.availability = str(body['start']) + '-' + str(body['end'])
+        updated_user = {
+            'id': user.id,
+            'email': user.email,
+            'is_student': user.is_student,
+            'groupId': user.groupId.id,
+            'availability': user.availability
+        }
+        return JsonResponse(updated_user, safe=False)
 
 
 @api_view(['GET'])
