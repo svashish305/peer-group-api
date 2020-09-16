@@ -13,7 +13,7 @@ class MyGroup(models.Model):
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, password=None, is_student=False, groupId=1):
+    def create_user(self, email, password=None, is_student=False, group_id=1, availability='1900-2100'):
         """
         Creates and saves a User with the given email, role and password.
         """
@@ -23,7 +23,8 @@ class MyUserManager(BaseUserManager):
         user = self.model(
             email=self.normalize_email(email),
             is_student=is_student,
-            groupId=groupId,
+            groupId=group_id,
+            availability=availability
         )
 
         user.set_password(password)
@@ -91,12 +92,12 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
 
 class Feedback(models.Model):
-    grade = models.CharField(max_length=200)
+    rating = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
     receiverId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.grade + " " + self.remarks + " " + str(self.receiverId)
+        return self.rating + " " + self.remarks + " " + str(self.receiverId)
 
 
 class Meeting(models.Model):
