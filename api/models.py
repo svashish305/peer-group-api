@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, PermissionsMixin
@@ -66,6 +67,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     is_student = models.BooleanField(default=False)
     groupId = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
+    rating = models.IntegerField(default=5, validators=[MinValueValidator(1), MaxValueValidator(5)])
     availability = models.CharField(default='1900-2100', max_length=256)
 
     objects = MyUserManager()

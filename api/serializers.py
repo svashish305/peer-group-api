@@ -5,7 +5,7 @@ from .models import MyUser, MyGroup, Task, Feedback, Meeting
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
-        fields = ('id', 'email', 'password', 'is_student', 'groupId', 'availability')
+        fields = ('id', 'email', 'password', 'is_student', 'rating', 'groupId', 'availability')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
