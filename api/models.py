@@ -13,7 +13,7 @@ class MyGroup(models.Model):
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, password=None, is_student=False, group_id=1, availability='1900-2100'):
+    def create_user(self, email, password=None, is_student=False, group_id=1):
         """
         Creates and saves a User with the given email, role and password.
         """
@@ -24,7 +24,6 @@ class MyUserManager(BaseUserManager):
             email=self.normalize_email(email),
             is_student=is_student,
             groupId=group_id,
-            availability=availability
         )
 
         user.set_password(password)
@@ -66,6 +65,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     is_student = models.BooleanField(default=False)
     groupId = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
+    availability = models.CharField(default='1900-2100', max_length=256)
 
     objects = MyUserManager()
 

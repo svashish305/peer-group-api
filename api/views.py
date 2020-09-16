@@ -7,6 +7,7 @@ from .permissions import IsAdminUser, IsTeacherAndLoggedIn
 from .serializers import UserSerializer, GroupSerializer, FeedbackSerializer, MeetingSerializer
 import json
 
+
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
     queryset = MyUser.objects.all()
@@ -86,7 +87,7 @@ def feedbacks_of_user(request, user_id):
 @api_view(['GET'])
 def users_of_group(request, group_id):
     group = MyGroup.objects.get(id=group_id)
-    users = list(MyUser.objects.filter(groupId=group).values("id", "email", "is_student"))
+    users = list(MyUser.objects.filter(groupId=group).values("id", "email", "is_student", "availability"))
     return JsonResponse(users, safe=False)
 
 
@@ -123,7 +124,7 @@ def meetings_of_user(request, user_id):
 def set_meeting(request, group_id):
     # meeting_duration 1hr and meeting_window <= 3*meeting_duration
     if not request.user.is_student:
-        body=json.loads(request.body)
+        body = json.loads(request.body)
         n = len(body['start'])
 
         for i in range(0, n):
@@ -149,7 +150,7 @@ def set_meeting(request, group_id):
                 idx = i
 
         meeting_start_time = idx
-        meeting_end_time = idx+100 if idx<2400 else 0000
+        meeting_end_time = idx + 100 if idx < 2400 else 0000
         users_in_group = list(MyUser.objects.filter(groupId=int(group_id)).values("id"))
         meeting = {
             'groupId': int(group_id),
