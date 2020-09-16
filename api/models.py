@@ -6,10 +6,10 @@ from django.contrib.auth.models import (
 
 # Create your models here.
 class MyGroup(models.Model):
-    groupName = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
 
     def __str__(self):
-        return self.groupName
+        return self.name
 
 
 class MyUserManager(BaseUserManager):
@@ -33,6 +33,7 @@ class MyUserManager(BaseUserManager):
         elif not user.is_student:
             user.is_superuser = True
             user.is_admin = True
+
             user.save(using=self._db)
         return user
 
@@ -89,6 +90,14 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+
+class Task(models.Model):
+    problem_statement = models.CharField(max_length=265)
+    problem_link = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.problem_statement
 
 
 class Feedback(models.Model):

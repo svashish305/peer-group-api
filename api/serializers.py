@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from .models import MyUser, MyGroup, Feedback, Meeting
+from .models import MyUser, MyGroup, Task, Feedback, Meeting
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
-        fields = ('id', 'email', 'password', 'is_student', 'groupId')
+        fields = ('id', 'email', 'password', 'is_student', 'groupId', 'availability')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -48,7 +48,13 @@ class UserSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyGroup
-        fields = ('id', 'groupName')
+        fields = ('id', 'name')
+
+
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = ('id', 'problem_statement', 'problem_link')
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
