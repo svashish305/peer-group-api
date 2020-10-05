@@ -2,9 +2,9 @@ from django.http import JsonResponse, HttpResponse
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import MyUser, MyGroup, Task, Feedback, Meeting
+from .models import MyUser, MyGroup, Feedback, Meeting
 from .permissions import IsAdminUser, IsTeacherAndLoggedIn
-from .serializers import UserSerializer, GroupSerializer, TaskSerializer, FeedbackSerializer, MeetingSerializer
+from .serializers import UserSerializer, GroupSerializer, FeedbackSerializer, MeetingSerializer
 import json
 
 
@@ -33,19 +33,19 @@ class GroupViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, IsTeacherAndLoggedIn)
 
 
-class TaskViewSet(viewsets.ModelViewSet):
-    queryset = Task.objects.all()
-    serializer_class = TaskSerializer
-
-    def get_permissions(self):
-        permission_classes = []
-        if self.action == 'create':
-            permission_classes = [IsAdminUser]
-        elif self.action == 'update' or self.action == 'partial_update' or self.action == 'destroy':
-            permission_classes = [IsAdminUser]
-        elif self.action == 'retrieve' or self.action == 'list':
-            permission_classes = [AllowAny]
-        return [permission() for permission in permission_classes]
+# class TaskViewSet(viewsets.ModelViewSet):
+#     queryset = Task.objects.all()
+#     serializer_class = TaskSerializer
+#
+#     def get_permissions(self):
+#         permission_classes = []
+#         if self.action == 'create':
+#             permission_classes = [IsAdminUser]
+#         elif self.action == 'update' or self.action == 'partial_update' or self.action == 'destroy':
+#             permission_classes = [IsAdminUser]
+#         elif self.action == 'retrieve' or self.action == 'list':
+#             permission_classes = [AllowAny]
+#         return [permission() for permission in permission_classes]
 
 
 class FeedbackViewSet(viewsets.ModelViewSet):

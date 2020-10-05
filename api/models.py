@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, PermissionsMixin
@@ -13,7 +14,7 @@ class MyGroup(models.Model):
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, password=None, is_student=False, group_id=1):
+    def create_user(self, email, password=None, name=None, is_student=False, group_id=1):
         """
         Creates and saves a User with the given email, role and password.
         """
@@ -22,6 +23,7 @@ class MyUserManager(BaseUserManager):
 
         user = self.model(
             email=self.normalize_email(email),
+            name=name,
             is_student=is_student,
             groupId=group_id,
         )
@@ -66,6 +68,8 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     is_student = models.BooleanField(default=False)
     groupId = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
+    name = models.CharField(max_length=256, default='New Student')
+    # rating = models.IntegerField(default=5, validators=[MinValueValidator(1), MaxValueValidator(5)])
     availability = models.CharField(default='1900-2100', max_length=256)
 
     objects = MyUserManager()
@@ -92,12 +96,12 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         return self.is_admin
 
 
-class Task(models.Model):
-    problem_statement = models.CharField(max_length=265)
-    problem_link = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.problem_statement
+# class Task(models.Model):
+#     problem_statement = models.CharField(max_length=256)
+#     problem_link = models.CharField(max_length=256)
+#
+#     def __str__(self):
+#         return self.problem_statement
 
 
 class Feedback(models.Model):
