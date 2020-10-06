@@ -6,7 +6,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
         # fields = ('id', 'name', 'email', 'password', 'is_student', 'rating', 'groupId', 'availability')
-        fields = ('id', 'name', 'email', 'password', 'is_student', 'groupId', 'availability')
+        fields = ('id', 'name', 'email', 'password', 'is_student', 'groupId', 'availability', 'created_at', 'updated_at')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -50,7 +50,7 @@ class UserSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyGroup
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'created_at', 'updated_at')
 
 
 # class TaskSerializer(serializers.ModelSerializer):
@@ -63,10 +63,10 @@ class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
         # fields = ('id', 'grade', 'remarks', 'receiverId')
-        fields = ('id', 'remarks', 'receiverId')
+        fields = ('id', 'remarks', 'receiverId', 'created_at', 'updated_at')
 
 
 class MeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting
-        fields = ('id', 'url', 'time', 'user', 'groupId')
+        fields = ('id', 'url', 'time', 'user', 'groupId', 'created_at', 'updated_at')

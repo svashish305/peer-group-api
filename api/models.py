@@ -6,7 +6,18 @@ from django.contrib.auth.models import (
 
 
 # Create your models here.
-class MyGroup(models.Model):
+from django.utils import timezone
+
+
+class Timestamp(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class MyGroup(Timestamp):
     name = models.CharField(max_length=200)
 
     def __str__(self):
@@ -56,7 +67,7 @@ class MyUserManager(BaseUserManager):
         return user
 
 
-class MyUser(AbstractBaseUser, PermissionsMixin):
+class MyUser(AbstractBaseUser, PermissionsMixin, Timestamp):
     email = models.EmailField(
         verbose_name='email address',
         max_length=255,
@@ -104,7 +115,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 #         return self.problem_statement
 
 
-class Feedback(models.Model):
+class Feedback(Timestamp):
     # rating = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
     receiverId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
@@ -114,7 +125,7 @@ class Feedback(models.Model):
         return self.remarks + " " + str(self.receiverId)
 
 
-class Meeting(models.Model):
+class Meeting(Timestamp):
     groupId = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
     user = models.ManyToManyField(MyUser)
     url = models.CharField(max_length=200, default=False, blank=False)
