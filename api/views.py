@@ -64,6 +64,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 def get_loggedin_user_details(request):
     user = {
         'id': request.user.id,
+        'name': request.user.name,
         'email': request.user.email,
         'is_student': request.user.is_student,
         'groupId': request.user.groupId.id,
@@ -102,7 +103,7 @@ def feedbacks_of_user(request, user_id):
 @api_view(['GET'])
 def users_of_group(request, group_id):
     group = MyGroup.objects.get(id=group_id)
-    users = list(MyUser.objects.filter(groupId=group).values("id", "email", "is_student", "availability"))
+    users = list(MyUser.objects.filter(groupId=group).values("id", "email", "name", "is_student", "availability"))
     return JsonResponse(users, safe=False)
 
 
@@ -122,6 +123,7 @@ def set_user_availability(request, user_id):
         updated_user = {
             'id': user.id,
             'email': user.email,
+            'name': user.name,
             'is_student': user.is_student,
             'groupId': user.groupId.id,
             'availability': user.availability

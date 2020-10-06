@@ -105,12 +105,13 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
 
 class Feedback(models.Model):
-    rating = models.CharField(max_length=200)
+    # rating = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
     receiverId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.rating + " " + self.remarks + " " + str(self.receiverId)
+        # return self.rating + " " + self.remarks + " " + str(self.receiverId)
+        return self.remarks + " " + str(self.receiverId)
 
 
 class Meeting(models.Model):
