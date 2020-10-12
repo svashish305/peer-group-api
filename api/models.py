@@ -29,7 +29,7 @@ def get_default_group():
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, password=None, name=None, is_student=False, groupId=get_default_group()):
+    def create_user(self, email, password=None, name=None, is_student=False, group_id=get_default_group()):
         """
         Creates and saves a User with the given email, role and password.
         """
@@ -40,7 +40,7 @@ class MyUserManager(BaseUserManager):
             email=self.normalize_email(email),
             name=name,
             is_student=is_student,
-            groupId=groupId,
+            groupId=group_id,
         )
 
         user.set_password(password)
@@ -81,7 +81,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin, Timestamp):
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
 
-    is_student = models.BooleanField(default=False)
+    is_student = models.BooleanField(default=False, null=True)
     groupId = models.ForeignKey(MyGroup, on_delete=models.CASCADE, default=get_default_group)
     name = models.CharField(max_length=256, default='New Student', null=True)
     # rating = models.IntegerField(default=5, validators=[MinValueValidator(1), MaxValueValidator(5)])
