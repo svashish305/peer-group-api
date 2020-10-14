@@ -73,6 +73,32 @@ def get_loggedin_user_details(request):
     return JsonResponse(user, safe=False)
 
 
+@api_view(['POST'])
+def update_or_create_user(request):
+    body = json.loads(request.body)
+    req_email = str(body['email'])
+    req_name = str(body['name'])
+    req_password = str(body['password'])
+    req_is_student = True if (str(body['is_student']) == 'true') else False
+    req_group_id = MyGroup.objects.get(id=int(body['group_id']))
+    obj, created = MyUser.objects.update_or_create(email=req_email, defaults={
+        'name': req_name,
+        'password': req_password,
+        'is_student': req_is_student,
+        'groupId': req_group_id
+    }, )
+    obj.save()
+    res_user = {
+        'id': obj.id,
+        'email': obj.email,
+        'name': obj.name,
+        'is_student': obj.is_student,
+        'groupId': obj.groupId.id,
+        'availability': obj.availability
+    }
+    return JsonResponse(res_user, safe=False)
+
+
 @api_view(['GET'])
 def group_details_of_user(request, user_id):
     user = MyUser.objects.get(id=user_id)
