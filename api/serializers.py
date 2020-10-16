@@ -5,8 +5,8 @@ from .models import MyUser, MyGroup, Feedback, Meeting
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
-        # fields = ('id', 'name', 'email', 'password', 'is_student', 'rating', 'groupId', 'availability')
-        fields = ('id', 'name', 'email', 'password', 'is_student', 'groupId', 'availability', 'created_at', 'updated_at')
+        # fields = ('id', 'name', 'email', 'password', 'is_student', 'rating', 'group_id', 'availability')
+        fields = ('id', 'name', 'email', 'password', 'is_student', 'group_id', 'availability', 'created_at', 'updated_at')
         # extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -62,11 +62,11 @@ class GroupSerializer(serializers.ModelSerializer):
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
-        # fields = ('id', 'grade', 'remarks', 'receiverId')
-        fields = ('id', 'remarks', 'receiverId', 'created_at', 'updated_at')
+        # fields = ('id', 'grade', 'remarks', 'receiver_id')
+        fields = ('id', 'remarks', 'receiver_id', 'created_at', 'updated_at')
 
 
 class MeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting
-        fields = ('id', 'url', 'time', 'user', 'groupId', 'created_at', 'updated_at')
+        fields = ('id', 'url', 'time', 'user', 'group_id', 'created_at', 'updated_at')
