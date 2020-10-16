@@ -40,7 +40,7 @@ class MyUserManager(BaseUserManager):
             email=self.normalize_email(email),
             name=name,
             is_student=is_student,
-            groupId=group_id,
+            group_id=group_id,
         )
 
         user.set_password(password)
@@ -82,7 +82,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin, Timestamp):
     is_admin = models.BooleanField(default=False)
 
     is_student = models.BooleanField(default=False, null=True)
-    groupId = models.ForeignKey(MyGroup, on_delete=models.CASCADE, default=get_default_group)
+    group_id = models.ForeignKey(MyGroup, on_delete=models.CASCADE, default=get_default_group)
     name = models.CharField(max_length=256, null=True)
     # rating = models.IntegerField(default=5, validators=[MinValueValidator(1), MaxValueValidator(5)])
     availability = models.CharField(default='1900-2100', max_length=256)
@@ -122,18 +122,18 @@ class MyUser(AbstractBaseUser, PermissionsMixin, Timestamp):
 class Feedback(Timestamp):
     # rating = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
-    receiverId = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    receiver_id = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
     def __str__(self):
-        # return self.rating + " " + self.remarks + " " + str(self.receiverId)
-        return self.remarks + " " + str(self.receiverId)
+        # return self.rating + " " + self.remarks + " " + str(self.receiver_id)
+        return self.remarks + " " + str(self.receiver_id)
 
 
 class Meeting(Timestamp):
-    groupId = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
+    group_id = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
     user = models.ManyToManyField(MyUser)
     url = models.CharField(max_length=200, default=False, blank=False)
     time = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.groupId) + " " + str(self.user) + " " + self.url + " " + str(self.time)
+        return str(self.group_id) + " " + str(self.user) + " " + self.url + " " + str(self.time)

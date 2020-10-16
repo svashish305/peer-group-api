@@ -67,7 +67,7 @@ def get_loggedin_user_details(request):
         'name': request.user.name,
         'email': request.user.email,
         'is_student': request.user.is_student,
-        'groupId': request.user.groupId.id,
+        'group_id': request.user.group_id.id,
         'availability': request.user.availability,
     }
     return JsonResponse(user, safe=False)
@@ -85,7 +85,7 @@ def update_or_create_user(request):
         'name': req_name,
         'password': req_password,
         'is_student': req_is_student,
-        'groupId': req_group_id
+        'group_id': req_group_id
     }, )
     obj.save()
     res_user = {
@@ -93,7 +93,7 @@ def update_or_create_user(request):
         'email': obj.email,
         'name': obj.name,
         'is_student': obj.is_student,
-        'groupId': obj.groupId.id,
+        'group_id': obj.group_id.id,
         'availability': obj.availability
     }
     return JsonResponse(res_user, safe=False)
@@ -102,7 +102,7 @@ def update_or_create_user(request):
 @api_view(['GET'])
 def group_details_of_user(request, user_id):
     user = MyUser.objects.get(id=user_id)
-    group_id = user.groupId.id
+    group_id = user.group_id.id
     group = MyGroup.objects.get(id=group_id)
     group_body = {
         'id': group.id,
@@ -115,28 +115,28 @@ def group_details_of_user(request, user_id):
 def feedbacks_of_user(request, user_id):
     if request.user.id == user_id:
         user = MyUser.objects.get(id=user_id)
-        feedbacks = list(Feedback.objects.filter(receiverId=user).values())
+        feedbacks = list(Feedback.objects.filter(receiver_id=user).values())
         return JsonResponse(feedbacks, safe=False)
     else:
         if request.user.is_student:
             return HttpResponse("You can't access this info")
         else:
             user = MyUser.objects.get(id=user_id)
-            feedbacks = list(Feedback.objects.filter(receiverId=user).values())
+            feedbacks = list(Feedback.objects.filter(receiver_id=user).values())
             return JsonResponse(feedbacks, safe=False)
 
 
 @api_view(['GET'])
 def users_of_group(request, group_id):
     group = MyGroup.objects.get(id=group_id)
-    users = list(MyUser.objects.filter(groupId=group).values("id", "email", "name", "is_student", "availability"))
+    users = list(MyUser.objects.filter(group_id=group).values("id", "email", "name", "is_student", "availability"))
     return JsonResponse(users, safe=False)
 
 
 @api_view(['GET'])
 def meetings_of_group(request, group_id):
     group = MyGroup.objects.get(id=group_id)
-    meetings = list(Meeting.objects.filter(groupId=group).values())
+    meetings = list(Meeting.objects.filter(group_id=group).values())
     return JsonResponse(meetings, safe=False)
 
 
@@ -151,7 +151,7 @@ def set_user_availability(request, user_id):
             'email': user.email,
             'name': user.name,
             'is_student': user.is_student,
-            'groupId': user.groupId.id,
+            'group_id': user.group_id.id,
             'availability': user.availability
         }
         return JsonResponse(updated_user, safe=False)
@@ -160,7 +160,7 @@ def set_user_availability(request, user_id):
 @api_view(['GET'])
 def meetings_of_user(request, user_id):
     user = MyUser.objects.get(id=user_id)
-    meetings = list(Meeting.objects.filter(groupId=user.groupId.id).values())
+    meetings = list(Meeting.objects.filter(group_id=user.group_id.id).values())
     return JsonResponse(meetings, safe=False)
 
 
@@ -195,9 +195,9 @@ def set_meeting(request, group_id):
 
         meeting_start_time = idx
         meeting_end_time = idx + 100 if idx < 2400 else 0000
-        users_in_group = list(MyUser.objects.filter(groupId=int(group_id)).values("id"))
+        users_in_group = list(MyUser.objects.filter(group_id=int(group_id)).values("id"))
         meeting = {
-            'groupId': int(group_id),
+            'group_id': int(group_id),
             'user': users_in_group,
             'url': 'some-zoom-link',
             'time': str(meeting_start_time) + ':' + str(meeting_end_time)
