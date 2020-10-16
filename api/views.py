@@ -79,7 +79,7 @@ def update_or_create_user(request):
     req_email = str(body['email'])
     req_name = str(body['name'])
     req_password = str(body['password'])
-    req_is_student = True if (str(body['is_student']) == 'true') else False
+    req_is_student = body['is_student']
     req_group_id = MyGroup.objects.get(id=int(body['group_id']))
     obj, created = MyUser.objects.update_or_create(email=req_email, defaults={
         'name': req_name,
