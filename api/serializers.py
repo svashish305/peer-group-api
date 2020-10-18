@@ -69,4 +69,4 @@ class FeedbackSerializer(serializers.ModelSerializer):
 class MeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting
-        fields = ('id', 'url', 'time', 'user', 'group_id', 'created_at', 'updated_at')
+        fields = ('id', 'url', 'time', 'users', 'group_id', 'created_at', 'updated_at')
