@@ -141,6 +141,20 @@ def meetings_of_group(request, group_id):
 
 
 @api_view(['POST'])
+def give_feedback(request):
+    body = json.loads(request.body)
+    remarks = body['remarks']
+    receiver_id = MyUser.objects.get(id=body['receiver_id'])
+    created_feedback = Feedback.objects.create(remarks=remarks, receiver_id=receiver_id)
+    posted_feedback = {
+        'id': created_feedback.id,
+        'remarks': created_feedback.remarks,
+        'receiver_id': created_feedback.receiver_id.id
+    }
+    return JsonResponse(posted_feedback, safe=False)
+
+
+@api_view(['POST'])
 def set_user_availability(request, user_id):
     if request.user.is_student:
         body = json.loads(request.body)
@@ -196,11 +210,20 @@ def set_meeting(request, group_id):
 
         meeting_start_time = idx
         meeting_end_time = idx + 100 if idx < 2400 else 0000
-        users_in_group = list(MyUser.objects.filter(group_id=int(group_id)).values("id"))
-        meeting = {
-            'group_id': int(group_id),
-            'user': users_in_group,
-            'url': 'some-zoom-link',
-            'time': str(meeting_start_time) + ':' + str(meeting_end_time)
+        users_in_group = MyUser.objects.filter(group_id=int(group_id))
+        group = MyGroup.objects.get(id=group_id)
+        group_users = set()
+        for user in users_in_group:
+            group_users.add(user)
+        meeting = Meeting.objects.create(group_id=group, url='some-zoom-link',
+                                         time=str(meeting_start_time) + ':' + str(meeting_end_time))
+        meeting.users.set(group_users)
+        meeting.save()
+        saved_meeting = {
+            'id': meeting.id,
+            'group_id': meeting.group_id.id,
+            'users': list(meeting.users.values("id")),
+            'url': meeting.url,
+            'time': meeting.time
         }
-        return JsonResponse(meeting, safe=False)
+        return JsonResponse(saved_meeting, safe=False)

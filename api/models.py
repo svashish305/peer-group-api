@@ -131,9 +131,9 @@ class Feedback(Timestamp):
 
 class Meeting(Timestamp):
     group_id = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
-    user = models.ManyToManyField(MyUser)
+    users = models.ManyToManyField(MyUser)
     url = models.CharField(max_length=200, default=False, blank=False)
     time = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.group_id) + " " + str(self.user) + " " + self.url + " " + str(self.time)
+        return str(self.group_id) + " " + str(self.users) + " " + self.url + " " + str(self.time)
