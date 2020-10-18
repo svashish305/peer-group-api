@@ -146,6 +146,7 @@ def set_user_availability(request, user_id):
         body = json.loads(request.body)
         user = MyUser.objects.get(id=user_id)
         user.availability = str(body['start']) + '-' + str(body['end'])
+        user.save()
         updated_user = {
             'id': user.id,
             'email': user.email,
