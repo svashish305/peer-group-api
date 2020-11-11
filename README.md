@@ -1,1 +1,1 @@
-Backend APIs for peer-group-app written using Django REST framework
+Backend Django App for [peer-group-app](https://github.com/svashish305/peer-group-app)
