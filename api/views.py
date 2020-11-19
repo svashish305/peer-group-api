@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import MyUser, MyGroup, Feedback, Meeting
 from .permissions import IsAdminUser, IsTeacherAndLoggedIn
 from .serializers import UserSerializer, GroupSerializer, FeedbackSerializer, MeetingSerializer
+import datetime as dt
 import json
 
 
@@ -215,8 +216,9 @@ def set_meeting(request, group_id):
         group_users = set()
         for user in users_in_group:
             group_users.add(user)
+        meeting_time = dt.datetime.strptime(str(meeting_start_time), '%H%M').time()
         meeting = Meeting.objects.create(group_id=group, url='some-zoom-link',
-                                         time=str(meeting_start_time) + ':' + str(meeting_end_time))
+                                         time=dt.datetime.combine(dt.date.today(), meeting_time).isoformat())
         meeting.users.set(group_users)
         meeting.save()
         saved_meeting = {
@@ -224,6 +226,6 @@ def set_meeting(request, group_id):
             'group_id': meeting.group_id.id,
             'users': list(meeting.users.values("id")),
             'url': meeting.url,
-            'time': meeting.time
+            'time': str(meeting_start_time) + '-' + str(meeting_end_time)
         }
         return JsonResponse(saved_meeting, safe=False)

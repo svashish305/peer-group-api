@@ -133,7 +133,7 @@ class Meeting(Timestamp):
     group_id = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
     users = models.ManyToManyField(MyUser)
     url = models.CharField(max_length=200, default=False, blank=False)
-    time = models.DateTimeField(auto_now=True)
+    time = models.DateTimeField(auto_now=False)
 
     def __str__(self):
         return str(self.group_id) + " " + str(self.users) + " " + self.url + " " + str(self.time)
