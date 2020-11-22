@@ -25,7 +25,7 @@ class MyGroup(Timestamp):
 
 
 def get_default_group():
-    return MyGroup.objects.get(id=1)
+    return MyGroup.objects.get_or_create(name='White')
 
 
 class MyUserManager(BaseUserManager):
