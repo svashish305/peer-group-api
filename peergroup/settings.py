@@ -33,14 +33,14 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.13', 'peer-group-api.herok
 AUTH_USER_MODEL = 'api.MyUser'
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'api'
+    # 'django.contrib.admin',
+    # 'django.contrib.auth',
+    # 'django.contrib.contenttypes',
+    # 'django.contrib.sessions',
+    # 'django.contrib.messages',
+    # 'django.contrib.staticfiles',
+    # 'rest_framework',
+    # 'api'
 ]
 
 MIDDLEWARE = [
