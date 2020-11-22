@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.13', 'https://peer-group-api.herokuapp.com/']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.13', 'peer-group-api.herokuapp.com']
 
 # Application definition
 AUTH_USER_MODEL = 'api.MyUser'
