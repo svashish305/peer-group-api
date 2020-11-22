@@ -24,13 +24,13 @@ class MyGroup(Timestamp):
         return self.name
 
 
-# def get_default_group():
-#     return MyGroup.objects.get(id=1)
+def get_default_group():
+    return MyGroup.objects.get(id=1)
 
 
 class MyUserManager(BaseUserManager):
-    # def create_user(self, email, password=None, name=None, is_student=False, group_id=get_default_group()):
-    def create_user(self, email, password=None, name=None, is_student=False, group_id=1):
+    def create_user(self, email, password=None, name=None, is_student=False, group_id=get_default_group()):
+    # def create_user(self, email, password=None, name=None, is_student=False, group_id=1):
         """
         Creates and saves a User with the given email, role and password.
         """
@@ -83,7 +83,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin, Timestamp):
     is_admin = models.BooleanField(default=False)
 
     is_student = models.BooleanField(default=False, null=True)
-    # group_id = models.ForeignKey(MyGroup, on_delete=models.CASCADE, default=get_default_group)
+    group_id = models.ForeignKey(MyGroup, on_delete=models.CASCADE, default=get_default_group)
     name = models.CharField(max_length=256, null=True)
     # rating = models.IntegerField(default=5, validators=[MinValueValidator(1), MaxValueValidator(5)])
     availability = models.CharField(default='1900-2100', max_length=256)
@@ -123,16 +123,16 @@ class MyUser(AbstractBaseUser, PermissionsMixin, Timestamp):
 class Feedback(Timestamp):
     # rating = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
-    # receiver_id = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    receiver_id = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
     def __str__(self):
-        # return self.remarks + " " + str(self.receiver_id)
-        return self.remarks
+        return self.remarks + " " + str(self.receiver_id)
+        # return self.remarks
 
 
 class Meeting(Timestamp):
-    # group_id = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
-    # users = models.ManyToManyField(MyUser)
+    group_id = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
+    users = models.ManyToManyField(MyUser)
     url = models.CharField(max_length=200, default=False, blank=False)
     time = models.DateTimeField(auto_now=False)
 
