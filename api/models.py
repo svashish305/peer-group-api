@@ -84,7 +84,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin, Timestamp):
 
     is_student = models.BooleanField(default=False, null=True)
     # group_id = models.ForeignKey(MyGroup, on_delete=models.CASCADE, default=get_default_group)
-    group_id = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
     name = models.CharField(max_length=256, null=True)
     # rating = models.IntegerField(default=5, validators=[MinValueValidator(1), MaxValueValidator(5)])
     availability = models.CharField(default='1900-2100', max_length=256)
@@ -124,16 +123,16 @@ class MyUser(AbstractBaseUser, PermissionsMixin, Timestamp):
 class Feedback(Timestamp):
     # rating = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
-    receiver_id = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    # receiver_id = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
     def __str__(self):
-        # return self.rating + " " + self.remarks + " " + str(self.receiver_id)
-        return self.remarks + " " + str(self.receiver_id)
+        # return self.remarks + " " + str(self.receiver_id)
+        return self.remarks
 
 
 class Meeting(Timestamp):
-    group_id = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
-    users = models.ManyToManyField(MyUser)
+    # group_id = models.ForeignKey(MyGroup, on_delete=models.CASCADE)
+    # users = models.ManyToManyField(MyUser)
     url = models.CharField(max_length=200, default=False, blank=False)
     time = models.DateTimeField(auto_now=False)
 
