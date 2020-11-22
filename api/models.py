@@ -1,4 +1,3 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, PermissionsMixin
@@ -6,7 +5,6 @@ from django.contrib.auth.models import (
 
 
 # Create your models here.
-from django.utils import timezone
 
 
 class Timestamp(models.Model):
@@ -85,7 +83,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin, Timestamp):
     is_student = models.BooleanField(default=False, null=True)
     group_id = models.ForeignKey(MyGroup, on_delete=models.CASCADE, default=get_default_group)
     name = models.CharField(max_length=256, null=True)
-    # rating = models.IntegerField(default=5, validators=[MinValueValidator(1), MaxValueValidator(5)])
     availability = models.CharField(default='1900-2100', max_length=256)
 
     objects = MyUserManager()
@@ -121,7 +118,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin, Timestamp):
 
 
 class Feedback(Timestamp):
-    # rating = models.CharField(max_length=200)
     remarks = models.CharField(max_length=200)
     receiver_id = models.ForeignKey(MyUser, on_delete=models.CASCADE)
 
