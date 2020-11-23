@@ -54,7 +54,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_WHITELIST = (
-    'http://localhost:3000', 'https://peer-group-app.web.app', 'https://peer-group-app.firebaseapp.com'
+    'http://localhost:3000', 'https://peer-group-app.firebaseapp.com', 'https://peer-group-app.web.app'
 )
 
 ROOT_URLCONF = 'peergroup.urls'
