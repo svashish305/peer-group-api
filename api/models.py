@@ -28,7 +28,7 @@ def get_default_group():
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, password=None, name=None, is_student=True, group_id=get_default_group()):
+    def create_user(self, email, password=None, name=None, is_student=False, group_id=get_default_group()):
     # def create_user(self, email, password=None, name=None, is_student=False, group_id=1):
         """
         Creates and saves a User with the given email, role and password.
